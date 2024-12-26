@@ -7,8 +7,8 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
+      - postgres_data:/var/lib/postgresql/data # postgres data will store here in the host machine
+    environment: #environment variables
       POSTGRES_USER: postgres
       POSTGRES_DB: threads
       POSTGRES_PASSWORD: threads

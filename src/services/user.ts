@@ -4,6 +4,8 @@ import { prismaClient } from "../lib/db";
 
 const JWT_SECRET = "$uperM@n@123";
 
+// CreateUserPayload: Defines the structure for creating a user.
+
 export interface CreateUserPayload {
   firstName: string;
   lastName?: string;
@@ -11,12 +13,16 @@ export interface CreateUserPayload {
   password: string;
 }
 
+// GetUserTokenPayload: Defines the structure for generating a login token.
+
 export interface GetUserTokenPayload {
   email: string;
   password: string;
 }
 
 class UserService {
+//   Combines a random salt with the user's password and hashes it using SHA-256.
+// Ensures passwords are stored securely in the database.
   private static generateHash(salt: string, password: string) {
     const hashedPassword = createHmac("sha256", salt)
       .update(password)
@@ -24,10 +30,13 @@ class UserService {
     return hashedPassword;
   }
 
+  // getUserById: Fetches a user by their unique id from the database.
+
   public static getUserById(id: string) {
     return prismaClient.user.findUnique({ where: { id } });
   }
 
+  // createUser: Creates a new user in the database.
   public static createUser(payload: CreateUserPayload) {
     const { firstName, lastName, email, password } = payload;
 
@@ -45,10 +54,12 @@ class UserService {
     });
   }
 
+  // getUserByEmail: Fetches a user by their email from the database.
   private static getUserByEmail(email: string) {
     return prismaClient.user.findUnique({ where: { email } });
   }
 
+  //Generates a JWT token for authenticated users.
   public static async getUserToken(payload: GetUserTokenPayload) {
     const { email, password } = payload;
     const user = await UserService.getUserByEmail(email);
@@ -60,11 +71,12 @@ class UserService {
     if (usersHashPassword !== user.password)
       throw new Error("Incorrect Password");
 
-    // Gen Token
+    // Generate JWT token
     const token = JWT.sign({ id: user.id, email: user.email }, JWT_SECRET);
     return token;
   }
 
+  // Decodes a JWT token to extract the user information
   public static decodeJWTToken(token: string) {
     return JWT.verify(token, JWT_SECRET);
   }

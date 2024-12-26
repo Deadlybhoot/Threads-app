@@ -1,3 +1,5 @@
+// GraphQl schema for User
+
 export const typeDefs = `#graphql
     type User {
         id: ID!

@@ -1,3 +1,5 @@
+// Main file for the graphql server. This file will create the ApolloServer instance and start it.
+
 import { ApolloServer } from "@apollo/server";
 import { User } from "./user";
 
